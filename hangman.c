@@ -1,8 +1,9 @@
 #include "common.h"
+#include<time.h>
 
 #define film_length  (50)
 
-int random(int range){
+int randomi(int range){
     return rand() % range + 1;
 }
 
@@ -17,6 +18,7 @@ void Toupper(char *a){
 
 int main(){
     FILE *fp;
+    srand(time(NULL));
     int c,filmcount = 0,fileno,i=0,j,randval,length,lives=10,score=0,changed;
     char s[film_length],disps[film_length],guess[film_length];
     if (NULL == (fp = fopen("movie-list.txt", "r")))
@@ -25,7 +27,7 @@ int main(){
         filmcount++;
     }
     fclose(fp);
-    fileno = random(filmcount);
+    fileno = randomi(filmcount);
      if (NULL == (fp = fopen("movie-list.txt", "r")))
         ERR_MESG("error opening file");
     while (NULL != fgets(s, film_length, fp)){
@@ -40,8 +42,8 @@ int main(){
     strcpy(disps,s);
     //printf("%s\n",s);
     //randomly changes the values of 
-    for(i=0;i<length/5;i++){
-        randval = random(length);
+    for(i=0;i<length/2;i++){
+        randval = randomi(length);
         if(disps[randval]!=' ' && disps[randval]!='_'){
             for(j=0;j<length;j++){
                 if(s[randval]==disps[j])
@@ -51,7 +53,12 @@ int main(){
     }
     while(lives>0){       
         printf("%s\tLives : %d\n",disps,lives);
-        scanf("%s",guess);
+        i=0;
+        while('\n'!=(c=fgetc(stdin))){
+        	guess[i] = c;
+        	i++;
+        }
+        guess[i] = '\0';
         Toupper(guess);
         changed = 0;
         if(strlen(guess)==1){
